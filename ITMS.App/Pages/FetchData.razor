@@ -1,0 +1,47 @@
+﻿@page "/fetchdata"
+@page "/fetchdata/{hospitalcode}"
+@using ITMS.App.Data
+@using ITMS.Models
+@inject ESBService ESBService
+
+<h1>Register Data</h1>
+
+<p>This component fetches demo data from the Service layer (ESB Api).</p>
+
+@if (registers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <JSGrid Items="@registers" PageSize="10">
+        <GridHeader>
+            <th>Admission Date</th>
+            <th>Patient</th>
+            <th>Ward</th>
+            <th>Theatre</th>
+            <th>Surgeon</th>
+        </GridHeader>
+        <GridRow>
+            <td>@context.Patient.AdmissionDate.ToShortDateString()</td>
+            <td>@context.Patient.PatientSurname , @context.Patient.PatientInitials </td>
+            <td>@context.Patient.WardName</td>
+            <td>@context.Patient.TheatreName</td>
+            <td>@context.Patient.Surgeon1Name</td>
+           </GridRow>
+    </JSGrid>
+
+}
+
+
+@code {
+
+    [Parameter]
+    private string hospitalcode { get; set; } = "ZZ";
+    List<Register> registers;
+
+    protected override async Task OnInitAsync()
+    {
+        registers = await ESBService.GetRegisters(hospitalcode);
+    }
+}
