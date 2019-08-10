@@ -1,0 +1,46 @@
+﻿@page "/doctors"
+@using ITMS.App.Data
+@using ITMS.Models
+@inject ESBService ESBService
+
+<h1>Doctors</h1>
+
+<p>This component fetches demo data from the Service layer (ESB Api).</p>
+
+@if (profiles == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <JSGrid Items="@profiles" PageSize="10">
+        <GridHeader>
+            <th>Doctor</th>
+            <th>Title</th>
+            <th>Speciality</th>
+            <th>Registration</th>
+            <th>Emergency No</th>
+        </GridHeader>
+        <GridRow>
+            <td>@context.Name</td>
+            <td>@context.Title</td>
+            <td>@context.Speciality.Description</td>
+            <td>@context.RegistrationNumber</td>
+            <td>@context.ContactNumbers.TelEmergency</td>
+           </GridRow>
+    </JSGrid>
+
+
+}
+
+
+@code {
+
+
+    List<Profile> profiles;
+
+    protected override async Task OnInitAsync()
+    {
+        profiles = await ESBService.GetProfiles();
+    }
+}

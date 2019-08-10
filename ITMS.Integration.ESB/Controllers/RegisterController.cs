@@ -6,7 +6,9 @@ using ITMS.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ITMS.Extensions;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ITMS.Integration.ESB.Controllers
 {
@@ -24,9 +26,7 @@ namespace ITMS.Integration.ESB.Controllers
         public IEnumerable<Register> GetRegisters(string HospitalCode)
         {
             //todo: get the data from ESB and replace TestData.registers
-
-            List<Register> registers = JsonConvert.DeserializeObject<List<Register>>(TestData.registers);
-            return registers;
+            return JsonConvert.DeserializeObject<List<Register>>(JsonConvert.DeserializeObject<JObject>(TestData.registers).First.First.ToString());
         }
     }
 }

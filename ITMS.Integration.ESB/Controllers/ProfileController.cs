@@ -6,6 +6,8 @@ using ITMS.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ITMS.Integration.ESB.Controllers
 {
@@ -22,7 +24,7 @@ namespace ITMS.Integration.ESB.Controllers
         [HttpGet]
         public IEnumerable<Profile> GetDoctorProfiles()
         {
-            return new List<Profile>();
+            return JsonConvert.DeserializeObject<List<Profile>>(JsonConvert.DeserializeObject<JObject>(TestData.profiles).First.First.ToString());
         }
     }
 }
