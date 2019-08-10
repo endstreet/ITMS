@@ -44,14 +44,14 @@ namespace ITMS.App
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            //services.AddHttpClient();
-            //Todo: impliment named service
-            services.AddSingleton<ESBService>();
+            //impliment named http service
             services.AddHttpClient("ESB", c =>
             {
-                c.BaseAddress = new Uri("https://localhost:44326/");
+                c.BaseAddress = new Uri(Configuration["Esb:Url"]);
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
+            services.AddSingleton<ESBService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
