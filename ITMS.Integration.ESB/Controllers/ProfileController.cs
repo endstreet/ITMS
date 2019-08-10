@@ -15,8 +15,8 @@ namespace ITMS.Integration.ESB.Controllers
     [ApiController]
     public class ProfileController : ControllerBase
     {
-        private readonly ILogger<ESBController> _logger;
-        public ProfileController(ILogger<ESBController> logger)
+        private readonly ILogger<ProfileController> _logger;
+        public ProfileController(ILogger<ProfileController> logger)
         {
             _logger = logger;
         }

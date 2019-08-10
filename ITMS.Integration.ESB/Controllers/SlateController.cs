@@ -13,20 +13,20 @@ namespace ITMS.Integration.ESB.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CaseController : ControllerBase
+    public class SlateController : ControllerBase
     {
-        private readonly ILogger<CaseController> _logger;
-        public CaseController(ILogger<CaseController> logger)
+
+        private readonly ILogger<SlateController> _logger;
+        public SlateController(ILogger<SlateController> logger)
         {
             _logger = logger;
         }
 
-        [HttpGet("{hospitalcode}/{sectioncode}")]
-        //SectionCode = ThetreCode 
-        public IEnumerable<Case> GetCases(string HospitalCode, string SectionCode)
+        [HttpGet("{hospitalcode}")]
+        public IEnumerable<Slate> GetRegisters(string HospitalCode)
         {
             //todo: get the data from ESB and replace TestData.registers
-            return JsonConvert.DeserializeObject<List<Case>>(JsonConvert.DeserializeObject<JObject>(TestData.cases).First.First.ToString());
+            return JsonConvert.DeserializeObject<List<Slate>>(JsonConvert.DeserializeObject<JObject>(TestData.slates).First.First.ToString());
         }
     }
 }
