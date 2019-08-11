@@ -1,0 +1,51 @@
+﻿@page "/cases"
+@page "/cases/{facilitycode}"
+@using ITMS.App.Data
+@using ITMS.Models
+@inject ESBService ESBService
+
+<h1>Cases</h1>
+
+<p>This component fetches demo data from the Service layer (ESB Api).</p>
+
+@if (cases == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+
+    <JSGrid Items="@cases" PageSize="10">
+        <GridHeader>
+            <th>Theatre</th>
+            <th>Patient</th>
+            <th>Procedure</th>
+            <th>Description</th>
+            <th>Start Time</th>
+            <th>Duration</th>
+        </GridHeader>
+        <GridRow>
+            <td>@context.TheatreNumber</td>
+            <td>@context.PatientName </td>
+            <td>@context.ProcedureText.First()</td>
+            <td>@context.ClinicalCptDescriptions.First()</td>
+            <td>@context.ProcedureStartDateTime</td>
+            <td>@context.ProcedureDuration</td>
+        </GridRow>
+    </JSGrid>
+
+
+}
+
+
+@code {
+
+    [Parameter]
+    private string facilitycode { get; set; } = "ZZ";
+    List<Case> cases;
+
+    protected override async Task OnInitAsync()
+    {
+        cases = await ESBService.GetCases(facilitycode,"doctorcode","theatrecode","fromdat:","todate");
+    }
+}

@@ -5,32 +5,35 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using ITMS.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-namespace ITMS.App.Data
+namespace ITMS.Integration.ESB
 {
-    public class ESBService
+    public class ESBApi
     {
 
         private readonly HttpClient client;
+        private readonly bool usetestdata;
 
         private List<Register> registers = new List<Register>();
         private List<Case> cases = new List<Case>();
         private List<Profile> profiles = new List<Profile>();
-        private List<Complex> complexes = new List<Complex>();
 
-        public ESBService(IHttpClientFactory clientFactory)
+        public ESBApi(IHttpClientFactory clientFactory)
         {
-            client = clientFactory.CreateClient("ESBService");
+            client = clientFactory.CreateClient("ESBApi");
         }
 
-        public async Task<List<Case>> GetCases(string facilitycode, string doctorcode, string theatrecode,string fromdate,string todate)
+        public async Task<List<Case>> GetCases(string facilitycode, string doctorcode, string theatrecode, string fromdate, string todate)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, String.Format("api/case/{0}/{1}/{2}/{3}/{4}", facilitycode, doctorcode, theatrecode, fromdate, todate));
+            var request = new HttpRequestMessage(HttpMethod.Get, String.Format("GetBookedCases?FacilityCode={0}&DoctorCode={1}&Theatrecode={2}&FromDate={3}&ToDate{4}", facilitycode, doctorcode, theatrecode, fromdate, todate));
             using (var response = await client.SendAsync(request))
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    cases = await response.Content.ReadAsAsync<List<Case>>();
+                    string jsoncases = await response.Content.ReadAsAsync<string>();
+                    cases = JsonConvert.DeserializeObject<List<Case>>(JsonConvert.DeserializeObject<JObject>(jsoncases).First.First.ToString());
                 }
             }
             return cases;
@@ -50,7 +53,19 @@ namespace ITMS.App.Data
           
         }
 
+        public async Task<List<Case>> GetCases(string hospital,string section)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, String.Format("api/case/{0}/{1}", hospital, section));
+            using (var response = await client.SendAsync(request))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    cases = await response.Content.ReadAsAsync<List<Case>>();
+                }
+            }
+            return cases;
 
+        }
 
         public async Task<List<Profile>> GetProfiles()
         {
@@ -64,19 +79,6 @@ namespace ITMS.App.Data
             }
             return profiles;
 
-        }
-
-        public async Task<List<Complex>> GetComplexes(string hospital)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, String.Format("api/complex/{0}",hospital));
-            using (var response = await client.SendAsync(request))
-            {
-                if (response.IsSuccessStatusCode)
-                {
-                    complexes = await response.Content.ReadAsAsync<List<Complex>>();
-                }
-            }
-            return complexes;
         }
     }
 }

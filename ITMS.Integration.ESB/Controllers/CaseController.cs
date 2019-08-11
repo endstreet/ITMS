@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ITMS.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -16,17 +17,24 @@ namespace ITMS.Integration.ESB.Controllers
     public class CaseController : ControllerBase
     {
         private readonly ILogger<CaseController> _logger;
-        public CaseController(ILogger<CaseController> logger)
+        private readonly bool _usetestdata;
+        private readonly ESBApi _api;
+        public CaseController(ILogger<CaseController> logger,IConfiguration config,ESBApi api)
         {
             _logger = logger;
+            _usetestdata = Boolean.Parse(config["ESBApi:UseTestdata"] ?? "false");
+            _api = api;
         }
 
-        [HttpGet("{hospitalcode}/{sectioncode}")]
+        [HttpGet("{facilitycode}/{doctorcode}/{theatrecode}/{fromdate}/{todate}")]
         //SectionCode = ThetreCode 
-        public IEnumerable<Case> GetCases(string HospitalCode, string SectionCode)
+        public async Task<IEnumerable<Case>> GetCases(string facilitycode, string doctorcode, string theatrecode, string fromdate, string todate)
         {
-            //todo: get the data from ESB and replace TestData.registers
-            return JsonConvert.DeserializeObject<List<Case>>(JsonConvert.DeserializeObject<JObject>(TestData.cases).First.First.ToString());
+            if (_usetestdata)
+            {
+                return JsonConvert.DeserializeObject<List<Case>>(JsonConvert.DeserializeObject<JObject>(TestData.cases).First.First.ToString());
+            }
+            return await _api.GetCases(facilitycode, doctorcode, theatrecode, fromdate, todate);
         }
     }
 }

@@ -45,9 +45,9 @@ namespace ITMS.App
             services.AddRazorPages();
             services.AddServerSideBlazor();
             //impliment named http service
-            services.AddHttpClient("ESB", c =>
+            services.AddHttpClient("ESBService", c =>
             {
-                c.BaseAddress = new Uri(Configuration["Esb:Url"]);
+                c.BaseAddress = new Uri(Configuration["ESBService:Url"]);
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
             services.AddSingleton<ESBService>();

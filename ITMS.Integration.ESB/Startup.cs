@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
 
 namespace ITMS.Integration.ESB
 {
@@ -20,6 +21,13 @@ namespace ITMS.Integration.ESB
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddHttpClient("ESBApi", c =>
+            {
+                c.BaseAddress = new Uri(Configuration["ESBApi:Url"]);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
+            services.AddSingleton<ESBApi>();
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
@@ -45,6 +53,8 @@ namespace ITMS.Integration.ESB
             {
                 endpoints.MapControllers();
             });
+
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
