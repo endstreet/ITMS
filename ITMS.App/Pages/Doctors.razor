@@ -17,41 +17,24 @@ else
     <RadzenGrid AllowFiltering="true" AllowPaging="true" PageSize="4" AllowSorting="true" Data="@profiles" TItem="Profile" ColumnWidth="200px">
         <Columns>
             <RadzenGridColumn TItem="Profile" Property="Name" Title="Doctor" />
+            <RadzenGridColumn TItem="Profile" Property="Title" Title="Title" />
             <RadzenGridColumn TItem="Profile" Property="Speciality.Description" Title="Speciality" />
             <RadzenGridColumn TItem="Profile" Property="RegistrationNumber" Title="RegistrationNumber" />
-            <RadzenGridColumn TItem="Profile" Property="Speciality.Description" Title="Speciality" />
             <RadzenGridColumn TItem="Profile" Property="ContactNumbers.TelEmergency" Title="Emergency No" />
         </Columns>
     </RadzenGrid>
-    <hr/>
-    <JSGrid Items="@profiles" PageSize="10">
-        <GridHeader>
-            <th>Doctor</th>
-            <th>Title</th>
-            <th>Speciality</th>
-            <th>Registration</th>
-            <th>Emergency No</th>
-        </GridHeader>
-        <GridRow>
-            <td>@context.Name</td>
-            <td>@context.Title</td>
-            <td>@context.Speciality.Description</td>
-            <td>@context.RegistrationNumber</td>
-            <td>@context.ContactNumbers.TelEmergency</td>
-        </GridRow>
-    </JSGrid>
-
-
 }
 
 
 @code {
 
+    [Parameter] private string facilitycode { get; set; } = "zz";
+    [Parameter] private string doctorcode{ get; set; } = "zz";
 
     IEnumerable<Profile> profiles;
 
     protected override async Task OnInitAsync()
     {
-        profiles = await ESBService.GetProfiles();
+        profiles = await ESBService.GetProfiles(facilitycode,doctorcode);
     }
 }

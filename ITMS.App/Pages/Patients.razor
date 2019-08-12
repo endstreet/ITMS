@@ -14,37 +14,31 @@
 }
 else
 {
-    <JSGrid Items="@registers" PageSize="10">
-        <GridHeader>
-            <th>Admission Date</th>
-            <th>Patient</th>
-            <th>Ward</th>
-            <th>Theatre</th>
-            <th>Surgeon</th>
-        </GridHeader>
-        <GridRow>
-            <td>@context.Patient.AdmissionDate.ToShortDateString()</td>
-            <td>@context.Patient.PatientSurname , @context.Patient.PatientInitials </td>
-            <td>@context.Patient.WardName</td>
-            <td>@context.Patient.TheatreName</td>
-            <td>@context.Patient.Surgeon1Name</td>
-           </GridRow>
-    </JSGrid>
-
-
+    <RadzenGrid AllowFiltering="true" AllowPaging="true" PageSize="4" AllowSorting="true" Data="@registers" TItem="Register" ColumnWidth="200px">
+        <Columns>
+            <RadzenGridColumn TItem="Register" Property="Patient.TheatreCode" Title="Theatre" />
+            <RadzenGridColumn TItem="Register" Property="Patient.TheatreName" Title="Theatre name" />
+            <RadzenGridColumn TItem="Register" Property="Patient.PatientSurname" Title="Patient" />
+            <RadzenGridColumn TItem="Register" Property="Patient.PatientInitials" Title="Initials" />
+            <RadzenGridColumn TItem="Register" Property="Patient.AdmissionDate" Title="Start" />
+            <RadzenGridColumn TItem="Register" Property="Patient.Surgeon1Name" Title="Surgeon" />
+        </Columns>
+    </RadzenGrid>
 }
 
 
 @code {
 
-    [Parameter]
-    private string hospitalcode { get; set; } = "ZZ";
+    [Parameter] private string facilitycode { get; set; } = "ZZ";
+    [Parameter] private string fromdate { get; set; } = "ZZ";
+    [Parameter] private string todate { get; set; } = "ZZ";
+
     IEnumerable<Register> registers;
     Patient firstPatient;
 
     protected override async Task OnInitAsync()
     {
-        registers = await ESBService.GetRegisters(hospitalcode);
+        registers = await ESBService.GetRegisters(facilitycode, fromdate, todate);
         firstPatient = registers.First().Patient;
     }
 }

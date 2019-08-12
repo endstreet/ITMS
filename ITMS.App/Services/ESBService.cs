@@ -13,11 +13,6 @@ namespace ITMS.App.Data
 
         private readonly HttpClient client;
 
-        private List<Register> registers = new List<Register>();
-        private List<Case> cases = new List<Case>();
-        private List<Profile> profiles = new List<Profile>();
-        private List<Complex> complexes = new List<Complex>();
-
         public ESBService(IHttpClientFactory clientFactory)
         {
             client = clientFactory.CreateClient("ESBService");
@@ -30,53 +25,63 @@ namespace ITMS.App.Data
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    cases = await response.Content.ReadAsAsync<List<Case>>();
+                    return await response.Content.ReadAsAsync<List<Case>>();
+                }
+                else
+                {
+                    return null;
                 }
             }
-            return cases;
-
         }
-        public async Task<List<Register>> GetRegisters(string hospital)
+        public async Task<List<Register>> GetRegisters(string facilitycode, string fromdate,string todate)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get,String.Format("api/register/{0}",hospital));
+            var request = new HttpRequestMessage(HttpMethod.Get,String.Format("api/register/{0}/{1}/{2}", facilitycode,fromdate,todate));
             using (var response = await client.SendAsync(request))
             {
                  if (response.IsSuccessStatusCode)
                 {
-                    registers = await response.Content.ReadAsAsync<List<Register>>();
+                    return await response.Content.ReadAsAsync<List<Register>>();
+                }
+                else
+                {
+                    return null;
                 }
             }
-            return registers;
-          
+
         }
 
 
 
-        public async Task<IEnumerable<Profile>> GetProfiles()
+        public async Task<IEnumerable<Profile>> GetProfiles(string facilitycode, string doctorcode)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, "api/profile");
+            var request = new HttpRequestMessage(HttpMethod.Get, String.Format("api/profile/{0}/{1}",facilitycode,doctorcode));
             using (var response = await client.SendAsync(request))
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    profiles = await response.Content.ReadAsAsync<List<Profile>>();
+                    return await response.Content.ReadAsAsync<List<Profile>>();
+                }
+                else
+                {
+                    return null;
                 }
             }
-            return profiles;
+       }
 
-        }
-
-        public async Task<List<Complex>> GetComplexes(string hospital)
+        public async Task<List<Complex>> GetComplexes(string facilitycode)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, String.Format("api/complex/{0}",hospital));
+            var request = new HttpRequestMessage(HttpMethod.Get, String.Format("api/complex/{0}",facilitycode));
             using (var response = await client.SendAsync(request))
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    complexes = await response.Content.ReadAsAsync<List<Complex>>();
+                    return await response.Content.ReadAsAsync<List<Complex>>();
+                }
+                else
+                {
+                    return null;
                 }
             }
-            return complexes;
         }
     }
 }

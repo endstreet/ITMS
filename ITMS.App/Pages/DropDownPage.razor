@@ -44,20 +44,24 @@
 </RadzenCard>
 
 @code {
-IEnumerable<Profile> profiles;
 
-protected override async Task OnInitAsync()
-{
-     profiles = await ESBService.GetProfiles();
-}
+    [Parameter] private string facilitycode { get; set; } = "";
+    [Parameter] private string doctorcode { get; set; } = "";
 
-Dictionary<DateTime, string> events = new Dictionary<DateTime, string>();
+    IEnumerable<Profile> profiles;
 
-void Change(object value, string name)
-{
-    var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+    protected override async Task OnInitAsync()
+    {
+         profiles = await ESBService.GetProfiles(facilitycode,doctorcode);
+    }
 
-    events.Add(DateTime.Now, $"{name} value changed to {str}");
-    StateHasChanged();
-}
+    Dictionary<DateTime, string> events = new Dictionary<DateTime, string>();
+
+    void Change(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+
+        events.Add(DateTime.Now, $"{name} value changed to {str}");
+        StateHasChanged();
+    }
 }

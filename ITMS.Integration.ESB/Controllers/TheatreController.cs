@@ -32,7 +32,7 @@ namespace ITMS.Integration.ESB.Controllers
         {
             if (_usetestdata)
             {
-                return JsonConvert.DeserializeObject<List<Theatre>>(JsonConvert.DeserializeObject<JObject>(TestData.complexes).First.First.ToString());
+                return JsonConvert.DeserializeObject<List<Theatre>>(JsonConvert.DeserializeObject<JObject>(TestData.theatres).First.First.ToString());
             }
             return await _api.GetTheatres(facilitycode, complex);
         }

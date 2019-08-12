@@ -39,12 +39,16 @@
 
 @code {
 
+    [Parameter] private string facilitycode { get; set; } = "";
+    [Parameter] private string fromdate { get; set; } = "";
+    [Parameter] private string todate { get; set; } = "";
+
     List<Register> registers;
     Patient firstPatient;
 
     protected override async Task OnInitAsync()
     {
-        registers = await ESBService.GetRegisters("ZZ");
+        registers = await ESBService.GetRegisters(facilitycode,fromdate,todate);
         firstPatient = registers.First().Patient;
     }
 

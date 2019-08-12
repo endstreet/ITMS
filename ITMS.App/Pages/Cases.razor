@@ -1,5 +1,6 @@
 ﻿@page "/cases"
-@page "/cases/{facilitycode}"
+@page "/cases/{facilitycode}/{doctorcode}/{theatrecode}/{fromdate}/{todate}"
+
 @using ITMS.App.Data
 @using ITMS.Models
 @inject ESBService ESBService
@@ -14,38 +15,29 @@
 }
 else
 {
-
-    <JSGrid Items="@cases" PageSize="10">
-        <GridHeader>
-            <th>Theatre</th>
-            <th>Patient</th>
-            <th>Procedure</th>
-            <th>Description</th>
-            <th>Start Time</th>
-            <th>Duration</th>
-        </GridHeader>
-        <GridRow>
-            <td>@context.TheatreNumber</td>
-            <td>@context.PatientName </td>
-            <td>@context.ProcedureText.First()</td>
-            <td>@context.ClinicalCptDescriptions.First()</td>
-            <td>@context.ProcedureStartDateTime</td>
-            <td>@context.ProcedureDuration</td>
-        </GridRow>
-    </JSGrid>
-
-
+    <RadzenGrid AllowFiltering="true" AllowPaging="true" PageSize="4" AllowSorting="true" Data="@cases" TItem="Case" ColumnWidth="200px">
+        <Columns>
+            <RadzenGridColumn TItem="Case" Property="TheatreNumber" Title="Theatre" />
+            <RadzenGridColumn TItem="Case" Property="PatientName" Title="Name" />
+            <RadzenGridColumn TItem="Case" Property="ProcedureStartDateTime" Title="Start" />
+            <RadzenGridColumn TItem="Case" Property="ProcedureDuration" Title="Duration" />
+        </Columns>
+    </RadzenGrid>
 }
 
 
 @code {
 
-    [Parameter]
-    private string facilitycode { get; set; } = "ZZ";
+    [Parameter] private string facilitycode { get; set; } = "ZZ";
+    [Parameter] private string doctorcode { get; set; } = "ZZ";
+    [Parameter] private string theatrecode { get; set; } = "ZZ";
+    [Parameter] private string fromdate { get; set; } = "ZZ";
+    [Parameter] private string todate { get; set; } = "ZZ";
+
     IEnumerable<Case> cases;
 
     protected override async Task OnInitAsync()
     {
-        cases = await ESBService.GetCases(facilitycode,"doctorcode","theatrecode","fromdat:","todate");
+        cases = await ESBService.GetCases(facilitycode, "doctorcode", "theatrecode", "fromdate", "todate");
     }
 }

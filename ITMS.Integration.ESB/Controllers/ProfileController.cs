@@ -31,7 +31,7 @@ namespace ITMS.Integration.ESB.Controllers
         {
             if (_usetestdata)
             {
-                return JsonConvert.DeserializeObject<List<Profile>>(JsonConvert.DeserializeObject<JObject>(TestData.complexes).First.First.ToString());
+                return JsonConvert.DeserializeObject<List<Profile>>(JsonConvert.DeserializeObject<JObject>(TestData.profiles).First.First.ToString());
             }
             return await _api.GetProfiles(facilitycode,doctorcode);
         }

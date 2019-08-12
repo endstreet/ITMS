@@ -10,7 +10,7 @@
 <h1 style="display:inline">Dialog with parameters</h1><a style="margin-left: 10px" href="https://github.com/akorchev/blazor.radzen.com/blob/master/Pages/DialogCardPage.razor" target="_blank">[source code]</a>
 
 <p>This page demonstrates <b>Dialog</b> component with parameters.</p>
-<h3>OrderID: @OrderID</h3>
+<h3>@register.Patient.PatientSurname</h3>
 <RadzenCard Style="margin-bottom: 20px;">
     <div class="row">
         <div class="col-md-6">
@@ -41,13 +41,15 @@
 </div>
 
 @code {
-    [Parameter] private int OrderID { get; set; }
+    [Parameter] private string facilitycode { get; set; } = "";
+    [Parameter] private string fromdate { get; set; } = "";
+    [Parameter] private string todate { get; set; } = "";
 
     Register register;
 
     protected override async Task OnInitAsync()
     {
-        IEnumerable<Register> registers = await ESBService.GetRegisters("ZZ");
+        IEnumerable<Register> registers = await ESBService.GetRegisters(facilitycode,fromdate,todate);
         register = registers.First();
     }
 }

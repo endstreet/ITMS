@@ -29,11 +29,15 @@
 </RadzenCard>
 
 @code {
+
+    [Parameter] private string facilitycode { get; set; } = "";
+    [Parameter] private string doctorcode { get; set; } = "";
+
     IEnumerable<Profile> profiles;
 
     protected override async Task OnInitAsync()
     {
-         profiles = await ESBService.GetProfiles();
+         profiles = await ESBService.GetProfiles(facilitycode,doctorcode);
     }
 
     Dictionary<DateTime, string> events = new Dictionary<DateTime, string>();

@@ -1,6 +1,9 @@
 ﻿@page "/datagrid"
 @page "/datagrid/{facilitycode}"
 
+@using ITMS.App.Data
+@using ITMS.Models
+@inject ESBService ESBService
 
 <h1 style="display:inline">DataGrid</h1>
 <a style="margin-left: 10px" href="https://github.com/akorchev/blazor.radzen.com/blob/master/Pages/DataGridPage.razor" target="_blank">[source code]</a>
@@ -13,32 +16,28 @@
 }
 else
 {
-
-    <p><em>Finished Loading...</em></p>
     <RadzenGrid AllowFiltering="true" AllowPaging="true" PageSize="4" AllowSorting="true" Data="@cases" TItem="Case" ColumnWidth="200px">
         <Columns>
             <RadzenGridColumn TItem="Case" Property="TheatreNumber" Title="Theatre" />
-            <RadzenGridColumn TItem="Case" Property="Name" Title="Name" />
-
+            <RadzenGridColumn TItem="Case" Property="PatientName" Title="Name" />
+            <RadzenGridColumn TItem="Case" Property="ProcedureStartDateTime" Title="Start" />
+            <RadzenGridColumn TItem="Case" Property="ProcedureDuration" Title="Duration" />
         </Columns>
     </RadzenGrid>
 }
 
 @code {
+    [Parameter] private string facilitycode { get; set; } = "ZZ";
+    [Parameter] private string doctorcode { get; set; } = "ZZ";
+    [Parameter] private string theatrecode { get; set; } = "ZZ";
+    [Parameter] private string fromdate { get; set; } = "ZZ";
+    [Parameter] private string todate { get; set; } = "ZZ";
 
-
-    class Case
-    {
-        public string TheatreNumber { get; set; }
-        public string Name { get; set; }
-    }
-
-    List<Case> cases;
+    IEnumerable<Case> cases;
 
     protected override async Task OnInitAsync()
     {
-        cases = new List<Case>();
-        cases.Add(new Case { TheatreNumber = "Test", Name = "Test"});
-        cases.Add(new Case { TheatreNumber = "Test1", Name = "Test1" });
+        cases = await ESBService.GetCases(facilitycode, doctorcode, theatrecode, fromdate, todate);
+
     }
 }
