@@ -1,0 +1,48 @@
+﻿@page "/datagrid"
+@page "/datagrid/{facilitycode}"
+@using ITMS.App.Data
+@using ITMS.Models
+@inject ESBService ESBService
+
+<h1 style="display:inline">DataGrid</h1><a style="margin-left: 10px" href="https://github.com/akorchev/blazor.radzen.com/blob/master/Pages/DataGridPage.razor" target="_blank">[source code]</a>
+
+<p>This page demonstrates <b>DataGrid</b> component.</p>
+
+@if (cases == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+
+    <p><em>Finished Loading...</em></p>
+    <RadzenGrid AllowFiltering="true" AllowPaging="true" PageSize="4" AllowSorting="true" Data="@cases" TItem="Case" ColumnWidth="200px">
+        <Columns>
+            <RadzenGridColumn TItem="Case" Property="TheatreNumber" Title="Theatre" />
+            @*<RadzenGridColumn TItem="Case" Property="PatientName" Title="Patient" />
+                <RadzenGridColumn TItem="Case" Property="Procedure" Title="Procedure">
+                    <Template>
+                        Procedure: @((context as Case).ProcedureText.First())
+                    </Template>
+                </RadzenGridColumn>
+                <RadzenGridColumn TItem="Case" Property="Description" Title="Procedure">
+                    <Template>
+                        Description: @((context as Case).ClinicalCptDescriptions.First())
+                    </Template>
+                </RadzenGridColumn>
+                <RadzenGridColumn TItem="Case" Property="ProcedureStartDateTime" Title="Start Time" />
+                <RadzenGridColumn TItem="Case" Property="ProcedureDuration" Title="Duration" />*@
+        </Columns>
+    </RadzenGrid>
+}
+
+@code {
+    [Parameter]
+    private string facilitycode { get; set; } = "ZZ";
+    IEnumerable<Case> cases;
+
+    protected override async Task OnInitAsync()
+    {
+        cases = await ESBService.GetCases(facilitycode, "doctorcode", "theatrecode", "fromdat:", "todate");
+    }
+}

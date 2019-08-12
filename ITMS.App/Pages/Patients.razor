@@ -39,10 +39,12 @@ else
 
     [Parameter]
     private string hospitalcode { get; set; } = "ZZ";
-    List<Register> registers;
+    IEnumerable<Register> registers;
+    Patient firstPatient;
 
     protected override async Task OnInitAsync()
     {
         registers = await ESBService.GetRegisters(hospitalcode);
+        firstPatient = registers.First().Patient;
     }
 }

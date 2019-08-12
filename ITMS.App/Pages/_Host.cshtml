@@ -1,21 +1,39 @@
 ﻿@page "/"
 @namespace ITMS.App.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject ThemeState ThemeState
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ITMS</title>
-    <base href="~/" />
-    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <environment include="Development">
+        <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+              asp-fallback-href="css/bootstrap/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
+              crossorigin="anonymous"
+              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" />
+    </environment>
     <link href="css/site.css" rel="stylesheet" />
-    <link href="css/grid.css" rel="stylesheet" />
+    @*<link href="css/grid.css" rel="stylesheet" />*@
 </head>
 <body>
     <app>@(await Html.RenderComponentAsync<App>())</app>
-
+    <script src="Radzen.Blazor.js"></script>
     <script src="_framework/blazor.server.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-73079289-4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-73079289-4');
+    </script>
 </body>
 </html>
+

@@ -1,0 +1,115 @@
+﻿@page "/tabs"
+
+@using ITMS.App.Data
+@using ITMS.Models
+
+
+@inject ESBService ESBService
+
+<h1 style="display:inline">Tabs</h1><a style="margin-left: 10px" href="https://github.com/akorchev/blazor.radzen.com/blob/master/Pages/TabsPage.razor" target="_blank">[source code]</a>
+
+<p>This page demonstrates <b>Tabs</b> component.</p>
+
+<RadzenTabs>
+    <Tabs>
+        <RadzenTabsItem Text="Orders">
+            <RadzenDataList PageSize="6" WrapItems="true" AllowPaging="true" Data="@orders" TItem="Order">
+                <Template Context="order">
+                    <RadzenCard Style="width:400px;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div>Company:</div>
+                                <b>@order.Customer?.CompanyName</b>
+                                <div style="margin-top:20px">Patient:</div>
+                                <b>@(order.Patient?.FirstName + " " + order.Patient?.LastName)</b>
+                                <br />
+                                <RadzenImage Path="@order.Patient?.Photo" Style="width:100px;" />
+                            </div>
+                            <div class="col-md-6">
+                                <div>Freight:</div>
+                                <b>@String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", order.Freight)</b>
+                                <div style="margin-top:20px">Ship country:</div>
+                                <b>@(order.ShipCountry)</b>
+                                <div style="margin-top:20px">Ship city:</div>
+                                <b>@(order.ShipCity)</b>
+                                <div style="margin-top:20px">Ship name:</div>
+                                <b>@(order.ShipName)</b>
+                            </div>
+                        </div>
+
+                    </RadzenCard>
+                </Template>
+            </RadzenDataList>
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="Patient">
+            <RadzenGrid AllowFiltering="true" AllowPaging="true" PageSize="4" AllowSorting="true" Data="@patients" TItem="Patient">
+                <Columns>
+                    <RadzenGridColumn TItem="Patient" Property="PatientID" Title="Patient ID" />
+                    <RadzenGridColumn TItem="Patient" Property="Photo" Title="Photo" Sortable="false" Filterable="false">
+                        <Template Context="data">
+                            <RadzenImage Path="@data?.Photo" />
+                        </Template>
+                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="Patient" Property="LastName" Title="Last Name" />
+                    <RadzenGridColumn TItem="Patient" Property="FirstName" Title="First Name" />
+                    <RadzenGridColumn TItem="Patient" Property="Title" Title="Title" />
+                    <RadzenGridColumn TItem="Patient" Property="TitleOfCourtesy" Title="Title Of Courtesy" />
+                    <RadzenGridColumn TItem="Patient" Property="BirthDate" Title="Birth Date" Format="date-time">
+                        <Template Context="data">
+                            @String.Format("{0:d}", data.BirthDate)
+                        </Template>
+                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="Patient" Property="HireDate" Title="Hire Date" Format="date-time">
+                        <Template Context="data">
+                            @String.Format("{0:d}", data.HireDate)
+                        </Template>
+                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="Patient" Property="Address" Title="Address" />
+                    <RadzenGridColumn TItem="Patient" Property="City" Title="City" />
+                    <RadzenGridColumn TItem="Patient" Property="Region" Title="Region" />
+                    <RadzenGridColumn TItem="Patient" Property="PostalCode" Title="Postal Code" />
+                    <RadzenGridColumn TItem="Patient" Property="Country" Title="Country" />
+                    <RadzenGridColumn TItem="Patient" Property="HomePhone" Title="Home Phone" />
+                    <RadzenGridColumn TItem="Patient" Property="Extension" Title="Extension" />
+                    <RadzenGridColumn TItem="Patient" Property="Notes" Title="Notes" />
+                </Columns>
+            </RadzenGrid>
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="Customers">
+            <RadzenGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@customers" TItem="Customer">
+                <Columns>
+                    <RadzenGridColumn TItem="Customer" Property="CustomerID" Title="Customer ID" />
+                    <RadzenGridColumn TItem="Customer" Property="CompanyName" Title="Company Name" />
+                    <RadzenGridColumn TItem="Customer" Property="ContactName" Title="Contact Name" />
+                    <RadzenGridColumn TItem="Customer" Property="ContactTitle" Title="Contact Title" />
+                    <RadzenGridColumn TItem="Customer" Property="Address" Title="Address" />
+                    <RadzenGridColumn TItem="Customer" Property="City" Title="City" />
+                    <RadzenGridColumn TItem="Customer" Property="Region" Title="Region" />
+                    <RadzenGridColumn TItem="Customer" Property="PostalCode" Title="Postal Code" />
+                    <RadzenGridColumn TItem="Customer" Property="Country" Title="Country" />
+                    <RadzenGridColumn TItem="Customer" Property="Phone" Title="Phone" />
+                    <RadzenGridColumn TItem="Customer" Property="Fax" Title="Fax" />
+                </Columns>
+            </RadzenGrid>
+        </RadzenTabsItem>
+    </Tabs>
+</RadzenTabs>
+@code {
+    IEnumerable<Order> orders;
+    IEnumerable<Patient> patients;
+    IEnumerable<Customer> customers;
+
+    protected override async Task OnInitAsync()
+    {
+        patients = await Task.FromResult(dbContext.Patients);
+
+        customers = await Task.FromResult(dbContext.Customers);
+
+        orders = await Task.FromResult((from order in dbContext.Orders
+                    .Include("Customer")
+                    .Include("Patient")
+                    .Include("OrderDetails")
+                    .Include("OrderDetails.Product")
+                                        select order));
+    }
+}

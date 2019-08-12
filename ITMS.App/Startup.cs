@@ -14,12 +14,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ITMS.App.Data;
-using Microsoft.AspNetCore.Http;
+using Radzen;
 
 namespace ITMS.App
 {
+    public class ThemeState
+    {
+        public string CurrentTheme { get; set; } = "default";
+    }
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -43,7 +48,13 @@ namespace ITMS.App
             });
 
             services.AddRazorPages();
-            services.AddServerSideBlazor();
+            services.AddServerSideBlazor().AddHubOptions(o =>
+            {
+                o.MaximumReceiveMessageSize = 10 * 1024 * 1024;
+            });
+            services.AddScoped<ThemeState>();
+            services.AddScoped<DialogService>();
+            services.AddScoped<NotificationService>();
             //impliment named http service
             services.AddHttpClient("ESBService", c =>
             {
@@ -66,6 +77,11 @@ namespace ITMS.App
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+                app.Use((ctx, next) =>
+                {
+                    ctx.Request.Scheme = "https";
+                    return next();
+                });
             }
 
             app.UseHttpsRedirection();

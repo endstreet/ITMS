@@ -42,7 +42,7 @@ else
 
     [Parameter]
     private string facilitycode { get; set; } = "ZZ";
-    List<Case> cases;
+    IEnumerable<Case> cases;
 
     protected override async Task OnInitAsync()
     {

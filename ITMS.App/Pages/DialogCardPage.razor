@@ -1,0 +1,53 @@
+﻿@page "/dialogcard/{OrderID}"
+
+@using ITMS.App.Data
+@using ITMS.Models
+
+
+@inject ESBService ESBService
+@inject DialogService dialogService
+
+<h1 style="display:inline">Dialog with parameters</h1><a style="margin-left: 10px" href="https://github.com/akorchev/blazor.radzen.com/blob/master/Pages/DialogCardPage.razor" target="_blank">[source code]</a>
+
+<p>This page demonstrates <b>Dialog</b> component with parameters.</p>
+<h3>OrderID: @OrderID</h3>
+<RadzenCard Style="margin-bottom: 20px;">
+    <div class="row">
+        <div class="col-md-6">
+            <div>Company:</div>
+            <b>@register.Patient?.Surgeon1Name</b>
+            <div style="margin-top:20px">Patient:</div>
+            <b>@(register.Patient?.PatientSurname + ", " + register.Patient?.PatientInitials)</b>
+            <br />
+            @*<RadzenImage Path="@register.Patient?.Photo" Style="width:100px;" />*@
+        </div>
+        @*<div class="col-md-6">
+            <div>Freight:</div>
+            <b>@String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", register.Freight)</b>
+            <div style="margin-top:20px">Ship country:</div>
+            <b>@(register.ShipCountry)</b>
+            <div style="margin-top:20px">Ship city:</div>
+            <b>@(register.ShipCity)</b>
+            <div style="margin-top:20px">Ship name:</div>
+            <b>@(register.ShipName)</b>
+        </div>*@
+    </div>
+</RadzenCard>
+<div class="row">
+    <div class="col-md-12">
+        <RadzenButton Click="@((args) => dialogService.Close(true))" Text="OK" Style="margin-bottom: 10px; width: 150px" />
+        <RadzenButton Click="@((args) => dialogService.Close(false))" ButtonStyle="secondary" Text="Cancel" Style="margin-bottom: 10px; width: 150px" />
+    </div>
+</div>
+
+@code {
+    [Parameter] private int OrderID { get; set; }
+
+    Register register;
+
+    protected override async Task OnInitAsync()
+    {
+        IEnumerable<Register> registers = await ESBService.GetRegisters("ZZ");
+        register = registers.First();
+    }
+}

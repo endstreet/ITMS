@@ -8,6 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Pages\CardPage.razor" />
+    <Content Remove="Pages\DataListPage.razor" />
+    <Content Remove="Pages\FieldsetPage.razor" />
+    <Content Remove="Pages\PanelPage.razor" />
+    <Content Remove="Pages\TabsPage.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="3.0.0-preview7.19365.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0-preview7.19362.6" />
@@ -17,11 +25,16 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0-preview7.19362.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0-preview7-19378-04" />
+    <PackageReference Include="Radzen.Blazor" Version="0.0.57" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ITMS.Data\ITMS.Data.csproj" />
     <ProjectReference Include="..\ITMS.Models\ITMS.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\js\" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,63 @@
+﻿@page "/card"
+
+@using ITMS.App.Data
+@using ITMS.Models
+
+
+@inject ESBService ESBService
+
+<h1 style="display:inline">Card</h1><a style="margin-left: 10px" href="https://github.com/akorchev/blazor.radzen.com/blob/master/Pages/CardPage.razor" target="_blank">[source code]</a>
+
+<p>This page demonstrates <b>Card</b> component.</p>
+<RadzenCard>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Card</h3>
+            <RadzenCard Style="width:600px;margin-bottom: 20px; height:500px;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div>Company:</div>
+                        <b>@lastOrder.Customer?.CompanyName</b>
+                        <div style="margin-top:20px">Patient:</div>
+                        <b>@(lastOrder.Patient?.FirstName + " " + lastOrder.Patient?.LastName)</b>
+                        <br />
+                        <RadzenImage Path="@lastOrder.Patient?.Photo" Style="width:100px;" />
+                    </div>
+                    <div class="col-md-6">
+                        <div>Freight:</div>
+                        <b>@String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", lastOrder.Freight)</b>
+                        <div style="margin-top:20px">Ship country:</div>
+                        <b>@(lastOrder.ShipCountry)</b>
+                        <div style="margin-top:20px">Ship city:</div>
+                        <b>@(lastOrder.ShipCity)</b>
+                        <div style="margin-top:20px">Ship name:</div>
+                        <b>@(lastOrder.ShipName)</b>
+                    </div>
+                </div>
+            </RadzenCard>
+        </div>
+        <div class="col-md-6">
+            <h3>Events</h3>
+            N/A
+        </div>
+    </div>
+</RadzenCard>
+
+@code {
+    IEnumerable<Order> orders;
+    Order lastOrder;
+
+    protected override async Task OnInitAsync()
+    {
+        var query = from order in dbContext.Orders
+                            .Include("Customer")
+                            .Include("Patient")
+                            .Include("OrderDetails")
+                            .Include("OrderDetails.Product")
+                    select order;
+
+        lastOrder = query.Last();
+
+        orders = await Task.FromResult(query.ToList());
+    }
+}

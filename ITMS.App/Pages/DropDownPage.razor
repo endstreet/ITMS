@@ -1,0 +1,63 @@
+﻿@page "/dropdown"
+
+@using ITMS.App.Data
+@using ITMS.Models
+
+
+@inject ESBService ESBService
+
+<h1 style="display:inline">DropDown</h1><a style="margin-left: 10px" href="https://github.com/akorchev/blazor.radzen.com/blob/master/Pages/DropDownPage.razor" target="_blank">[source code]</a>
+
+<p>This page demonstrates <b>DropDown</b> component.</p>
+<RadzenCard>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>DropDown</h3>
+            <RadzenDropDown Data="@profiles" TextProperty="Name" ValueProperty="DoctorCode" Style="margin-bottom: 20px" Change="@(args => Change(args, "DropDown"))" />
+            <br />
+            <h3>DropDown with placeholder</h3>
+            <RadzenDropDown Placeholder="Select..." Data="@profiles" TextProperty="Name" ValueProperty="DoctorCode" Change="@(args => Change(args, "DropDown with placeholder"))" Style="margin-bottom: 20px" />
+            <br />
+            <h3>DropDown with template</h3>
+            <RadzenDropDown Placeholder="Select..." Data="@profiles" TextProperty="Name" ValueProperty="DoctorCode"
+                            Change="@(args => Change(args, "DropDown with placeholder"))" Style="margin-bottom: 20px; width:400px;">
+                <Template>
+                    Company: @((context as Profile).Name)
+                </Template>
+            </RadzenDropDown>
+            <br />
+            <h3>DropDown with multiple selection</h3>
+            <RadzenDropDown Multiple="true" Placeholder="Select..." Data="@profiles" TextProperty="Name" ValueProperty="DoctorCode" 
+                            Change="@(args => Change(args, "DropDown with multiple selection"))" Style="margin-bottom: 20px; width:400px;" />
+        </div>
+        <div class="col-md-6">
+            <h3>Events</h3>
+            <RadzenCard style="overflow: auto;height:500px;">
+                @foreach (var e in events.OrderByDescending(i => i.Key))
+                {
+                    @e.Value
+                    <br />
+                }
+            </RadzenCard>
+        </div>
+    </div>
+</RadzenCard>
+
+@code {
+IEnumerable<Profile> profiles;
+
+protected override async Task OnInitAsync()
+{
+     profiles = await ESBService.GetProfiles();
+}
+
+Dictionary<DateTime, string> events = new Dictionary<DateTime, string>();
+
+void Change(object value, string name)
+{
+    var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+
+    events.Add(DateTime.Now, $"{name} value changed to {str}");
+    StateHasChanged();
+}
+}

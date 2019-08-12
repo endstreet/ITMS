@@ -52,7 +52,7 @@ namespace ITMS.App.Data
 
 
 
-        public async Task<List<Profile>> GetProfiles()
+        public async Task<IEnumerable<Profile>> GetProfiles()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "api/profile");
             using (var response = await client.SendAsync(request))

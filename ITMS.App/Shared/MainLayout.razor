@@ -1,16 +1,106 @@
 ﻿@inherits LayoutComponentBase
-
-<div class="sidebar">
-    <NavMenu />
+@using Microsoft.AspNetCore.Http
+@using Radzen.Blazor
+@inject ThemeState ThemeState
+@inject IUriHelper UriHelper
+<link href="css/@(Theme)" rel="stylesheet" />
+<RadzenDialog />
+<RadzenNotification />
+<RadzenHeader>
+    <ChildContent>
+        <div class="row justify-content-start align-items-center">
+            <div class="col-md-6 d-flex align-items-center">
+                <RadzenSidebarToggle Click="@SidebarToggle0Click">
+                </RadzenSidebarToggle>
+                <RadzenLabel Text="ITMS">
+                </RadzenLabel>
+            </div>
+            <div class="col-md-6 d-flex align-items-center justify-content-end">
+                <NavLink class="btn-secondary" style="padding: 0 1rem; margin: 1rem; display: inline-block;" href="/get-started">Get started</NavLink>
+                <div style="margin: 1rem">
+                    Theme: <RadzenDropDown TextProperty="Text" ValueProperty="Value" Data="@themes" Value="@ThemeState.CurrentTheme" Change="@ChangeTheme" />
+                    <LoginDisplay />
+                    <a href="https://mediclinic.atlassian.net/secure/RapidBoard.jspa?rapidView=36&projectKey=ITMS&view=planning&selectedIssue=ITMS-106&epics=visible" target="_blank">Jira</a>
+                </div>
+            </div>
+        </div>
+    </ChildContent>
+</RadzenHeader>
+<div style="width:100%">
+    <RadzenBody @ref="body0">
+        <ChildContent>
+            <RadzenContentContainer Name="main">
+                @Body
+            </RadzenContentContainer>
+        </ChildContent>
+    </RadzenBody>
 </div>
+<RadzenSidebar @ref="sidebar0">
+    <ChildContent>
+        <RadzenPanelMenu style="height: 100%;padding-top:20px">
+            <ChildContent>
+                <RadzenPanelmenuItem Text="First Look" Path="/" Icon="home"></RadzenPanelmenuItem>
+                <RadzenPanelmenuItem Text="Cases" Path="/Cases" Icon="grid_on"></RadzenPanelmenuItem>
+                <RadzenPanelmenuItem Text="Patients" Path="/Patients" Icon="grid_on"></RadzenPanelmenuItem>
+                <RadzenPanelmenuItem Text="Doctors" Path="/Doctors" Icon="grid_on"></RadzenPanelmenuItem>
+                <RadzenPanelmenuItem Text="DataGrid" Path="datagrid" Icon="grid_on"></RadzenPanelmenuItem>
+                @*<RadzenPanelmenuItem Text="DataList" Path="datalist" Icon="list"></RadzenPanelmenuItem>
+        <RadzenPanelmenuItem Text="Tabs" Path="tabs" Icon="tab"></RadzenPanelmenuItem>*@
+                <RadzenPanelmenuItem Text="Buttons" Path="buttons" Icon="account_circle"></RadzenPanelmenuItem>
+                <RadzenPanelmenuItem Text="CheckBox" Path="checkbox" Icon="check_circle"></RadzenPanelmenuItem>
+                <RadzenPanelmenuItem Text="TextBox" Path="textbox" Icon="input"></RadzenPanelmenuItem>
+                <RadzenPanelmenuItem Text="TextArea" Path="textarea" Icon="description"></RadzenPanelmenuItem>
+                <RadzenPanelmenuItem Text="Password" Path="password" Icon="payment"></RadzenPanelmenuItem>
+                <RadzenPanelmenuItem Text="Numeric" Path="numeric" Icon="aspect_ratio"></RadzenPanelmenuItem>
+                <RadzenPanelmenuItem Text="DatePicker" Path="datepicker" Icon="date_range"></RadzenPanelmenuItem>
+                <RadzenPanelmenuItem Text="DropDown" Path="dropdown" Icon="dns"></RadzenPanelmenuItem>
+                <RadzenPanelmenuItem Text="ListBox" Path="listbox" Icon="view_list"></RadzenPanelmenuItem>
+                @*<RadzenPanelmenuItem Text="Panel" Path="panel" Icon="content_paste"></RadzenPanelmenuItem>
+        <RadzenPanelmenuItem Text="Fieldset" Path="fieldset" Icon="account_balance_wallet"></RadzenPanelmenuItem>
+        <RadzenPanelmenuItem Text="Card" Path="card" Icon="line_style"></RadzenPanelmenuItem>*@
+                <RadzenPanelmenuItem Text="FileInput" Path="fileinput" Icon="attach_file"></RadzenPanelmenuItem>
+                <RadzenPanelmenuItem Text="Dialog" Path="dialog" Icon="perm_media"></RadzenPanelmenuItem>
+                <RadzenPanelmenuItem Text="TemplateForm" Path="templateform" Icon="line_style"></RadzenPanelmenuItem>
+                <RadzenPanelmenuItem Text="Notification" Path="notification" Icon="announcement"></RadzenPanelmenuItem>
+            </ChildContent>
+        </RadzenPanelMenu>
+    </ChildContent>
+</RadzenSidebar>
+<RadzenFooter>
+    <ChildContent>
+        <RadzenLabel Text="JustSolve, Copyright &copy; 2019">
+        </RadzenLabel>
+    </ChildContent>
+</RadzenFooter>
+@code {
+    RadzenSidebar sidebar0;
+    RadzenBody body0;
 
-<div class="main">
-    <div class="top-row px-4">
-        <LoginDisplay />
-        <a href="https://mediclinic.atlassian.net/secure/RapidBoard.jspa?rapidView=36&projectKey=ITMS&view=planning&selectedIssue=ITMS-106&epics=visible" target="_blank">Jira</a>
-    </div>
+    dynamic themes = new[]
+    {
+        new {Text = "Default", Value = "default"},
+        new { Text = "Dark", Value="dark" },
+        new { Text = "Software", Value = "software"},
+        new { Text = "Humanistic", Value = "humanistic" }
+    };
 
-    <div class="content px-4">
-        @Body
-    </div>
-</div>
+    void SidebarToggle0Click(dynamic args)
+    {
+        sidebar0.Toggle();
+        body0.Toggle();
+    }
+
+    string Theme
+    {
+        get
+        {
+            return $"{ThemeState.CurrentTheme}.css";
+        }
+    }
+
+    void ChangeTheme(object value)
+    {
+        ThemeState.CurrentTheme = value.ToString();
+        UriHelper.NavigateTo(UriHelper.GetAbsoluteUri());
+    }
+}

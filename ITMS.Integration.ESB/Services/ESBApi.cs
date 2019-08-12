@@ -14,8 +14,6 @@ namespace ITMS.Integration.ESB
     {
 
         private readonly HttpClient client;
-        private readonly bool usetestdata;
-
         private List<Register> registers = new List<Register>();
         private List<Case> cases = new List<Case>();
         private List<Profile> profiles = new List<Profile>();
@@ -51,20 +49,6 @@ namespace ITMS.Integration.ESB
             }
             return registers;
           
-        }
-
-        public async Task<List<Case>> GetCases(string hospital,string section)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, String.Format("api/case/{0}/{1}", hospital, section));
-            using (var response = await client.SendAsync(request))
-            {
-                if (response.IsSuccessStatusCode)
-                {
-                    cases = await response.Content.ReadAsAsync<List<Case>>();
-                }
-            }
-            return cases;
-
         }
 
         public async Task<List<Profile>> GetProfiles()

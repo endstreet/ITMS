@@ -13,6 +13,17 @@
 }
 else
 {
+
+    <RadzenGrid AllowFiltering="true" AllowPaging="true" PageSize="4" AllowSorting="true" Data="@profiles" TItem="Profile" ColumnWidth="200px">
+        <Columns>
+            <RadzenGridColumn TItem="Profile" Property="Name" Title="Doctor" />
+            <RadzenGridColumn TItem="Profile" Property="Speciality.Description" Title="Speciality" />
+            <RadzenGridColumn TItem="Profile" Property="RegistrationNumber" Title="RegistrationNumber" />
+            <RadzenGridColumn TItem="Profile" Property="Speciality.Description" Title="Speciality" />
+            <RadzenGridColumn TItem="Profile" Property="ContactNumbers.TelEmergency" Title="Emergency No" />
+        </Columns>
+    </RadzenGrid>
+    <hr/>
     <JSGrid Items="@profiles" PageSize="10">
         <GridHeader>
             <th>Doctor</th>
@@ -27,7 +38,7 @@ else
             <td>@context.Speciality.Description</td>
             <td>@context.RegistrationNumber</td>
             <td>@context.ContactNumbers.TelEmergency</td>
-           </GridRow>
+        </GridRow>
     </JSGrid>
 
 
@@ -37,7 +48,7 @@ else
 @code {
 
 
-    List<Profile> profiles;
+    IEnumerable<Profile> profiles;
 
     protected override async Task OnInitAsync()
     {
