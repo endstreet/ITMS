@@ -28,7 +28,7 @@ namespace ITMS.Integration.ESB.Controllers
 
         [HttpGet("{facilitycode}/{doctorcode}/{theatrecode}/{fromdate}/{todate}")]
         //SectionCode = ThetreCode 
-        public async Task<List<Case>> GetCases(string facilitycode, string doctorcode, string theatrecode, string fromdate, string todate)
+        public async Task<IEnumerable<Case>> GetCases(string facilitycode, string doctorcode, string theatrecode, string fromdate, string todate)
         {
             if (_usetestdata)
             {

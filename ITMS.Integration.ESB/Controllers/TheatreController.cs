@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ITMS.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -16,17 +17,24 @@ namespace ITMS.Integration.ESB.Controllers
     public class TheatreController : ControllerBase
     {
 
-        private readonly ILogger<TheatreController> _logger;
-        public TheatreController(ILogger<TheatreController> logger)
+        private readonly ILogger<ComplexController> _logger;
+        private readonly bool _usetestdata;
+        private readonly ESBApi _api;
+        public TheatreController(ILogger<ComplexController> logger, IConfiguration config, ESBApi api)
         {
             _logger = logger;
+            _usetestdata = Boolean.Parse(config["ESBApi:UseTestdata"] ?? "false");
+            _api = api;
         }
 
-        [HttpGet("{hospitalcode}")]
-        public IEnumerable<Theatre> GetComplexTheatres(string HospitalCode)
+        [HttpGet("{facilitycode}/{complex}")]
+        public async Task<IEnumerable<Theatre>> GetRegisters(string facilitycode, string complex)
         {
-            //todo: get the data from ESB and replace TestData.registers
-            return JsonConvert.DeserializeObject<List<Theatre>>(JsonConvert.DeserializeObject<JObject>(TestData.theatres).First.First.ToString());
+            if (_usetestdata)
+            {
+                return JsonConvert.DeserializeObject<List<Theatre>>(JsonConvert.DeserializeObject<JObject>(TestData.complexes).First.First.ToString());
+            }
+            return await _api.GetTheatres(facilitycode, complex);
         }
     }
 }

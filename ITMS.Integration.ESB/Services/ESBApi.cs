@@ -14,55 +14,114 @@ namespace ITMS.Integration.ESB
     {
 
         private readonly HttpClient client;
-        private List<Register> registers = new List<Register>();
-        private List<Case> cases = new List<Case>();
-        private List<Profile> profiles = new List<Profile>();
 
         public ESBApi(IHttpClientFactory clientFactory)
         {
             client = clientFactory.CreateClient("ESBApi");
         }
 
-        public async Task<List<Case>> GetCases(string facilitycode, string doctorcode, string theatrecode, string fromdate, string todate)
+        public async Task<IEnumerable<Case>> GetCases(string facilitycode, string doctorcode, string theatrecode, string fromdate, string todate)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, String.Format("GetBookedCases?FacilityCode={0}&DoctorCode={1}&Theatrecode={2}&FromDate={3}&ToDate{4}", facilitycode, doctorcode, theatrecode, fromdate, todate));
             using (var response = await client.SendAsync(request))
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    string jsoncases = await response.Content.ReadAsAsync<string>();
-                    cases = JsonConvert.DeserializeObject<List<Case>>(JsonConvert.DeserializeObject<JObject>(jsoncases).First.First.ToString());
+                    string jsonresult = await response.Content.ReadAsAsync<string>();
+                    return JsonConvert.DeserializeObject<List<Case>>(JsonConvert.DeserializeObject<JObject>(jsonresult).First.First.ToString());
                 }
-            }
-            return cases;
-
-        }
-        public async Task<List<Register>> GetRegisters(string hospital)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get,String.Format("api/register/{0}",hospital));
-            using (var response = await client.SendAsync(request))
-            {
-                 if (response.IsSuccessStatusCode)
+                else
                 {
-                    registers = await response.Content.ReadAsAsync<List<Register>>();
+                    return null;
                 }
             }
-            return registers;
-          
         }
 
-        public async Task<List<Profile>> GetProfiles()
+        public async Task<IEnumerable<Complex>> GetComplex(string facilitycode)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, "api/profile");
+            var request = new HttpRequestMessage(HttpMethod.Get, String.Format("GetComplex?FacilityCode={0}", facilitycode));
             using (var response = await client.SendAsync(request))
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    profiles = await response.Content.ReadAsAsync<List<Profile>>();
+                    string jsonresult = await response.Content.ReadAsAsync<string>();
+                    return JsonConvert.DeserializeObject<List<Complex>>(JsonConvert.DeserializeObject<JObject>(jsonresult).First.First.ToString());
+                }
+                else
+                {
+                    return null;
                 }
             }
-            return profiles;
-
         }
+
+        public async Task<IEnumerable<Theatre>> GetTheatres(string facilitycode,string complex)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, String.Format("GetComplexTheatres?FacilityCode={0}&Complex={1}", facilitycode, complex));
+            using (var response = await client.SendAsync(request))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonresult = await response.Content.ReadAsAsync<string>();
+                    return JsonConvert.DeserializeObject<List<Theatre>>(JsonConvert.DeserializeObject<JObject>(jsonresult).First.First.ToString());
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public async Task<IEnumerable<Profile>> GetProfiles(string facilitycode, string doctorcode)
+        {
+             var request = new HttpRequestMessage(HttpMethod.Get, String.Format("GetDoctorProfiles?FacilityCode={0}&DoctorCode={1}", facilitycode, doctorcode));
+            using (var response = await client.SendAsync(request))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonresult = await response.Content.ReadAsAsync<string>();
+                    return JsonConvert.DeserializeObject<List<Profile>>(JsonConvert.DeserializeObject<JObject>(jsonresult).First.First.ToString());
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public async Task<IEnumerable<Slate>> GetDoctorSlate(string facilitycode, string doctorcode,string theatrecode)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, String.Format("GetDoctorProfiles?FacilityCode={0}&DoctorCode={1}&TheatreCode={2}", facilitycode, doctorcode,theatrecode));
+            using (var response = await client.SendAsync(request))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonresult = await response.Content.ReadAsAsync<string>();
+                    return JsonConvert.DeserializeObject<List<Slate>>(JsonConvert.DeserializeObject<JObject>(jsonresult).First.First.ToString());
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public async Task<IEnumerable<Register>> GetTheatreRegister(string facilitycode, string fromdate, string todate)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, String.Format("GetDoctorProfiles?FacilityCode={0}&FromDate={1}&ToDate={2}", facilitycode, fromdate, todate));
+            using (var response = await client.SendAsync(request))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonresult = await response.Content.ReadAsAsync<string>();
+                    return JsonConvert.DeserializeObject<List<Register>>(JsonConvert.DeserializeObject<JObject>(jsonresult).First.First.ToString());
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+
     }
 }

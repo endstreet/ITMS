@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ITMS.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -16,17 +17,24 @@ namespace ITMS.Integration.ESB.Controllers
     public class SlateController : ControllerBase
     {
 
-        private readonly ILogger<SlateController> _logger;
-        public SlateController(ILogger<SlateController> logger)
+        private readonly ILogger<ComplexController> _logger;
+        private readonly bool _usetestdata;
+        private readonly ESBApi _api;
+        public SlateController(ILogger<ComplexController> logger, IConfiguration config, ESBApi api)
         {
             _logger = logger;
+            _usetestdata = Boolean.Parse(config["ESBApi:UseTestdata"] ?? "false");
+            _api = api;
         }
 
-        [HttpGet("{hospitalcode}")]
-        public IEnumerable<Slate> GetRegisters(string HospitalCode)
+        [HttpGet("{facilitycode}/{doctorcode}/{theatrecode}")]
+        public async Task<IEnumerable<Slate>> GetRegisters(string facilitycode, string doctorcode, string theatrecode)
         {
-            //todo: get the data from ESB and replace TestData.registers
-            return JsonConvert.DeserializeObject<List<Slate>>(JsonConvert.DeserializeObject<JObject>(TestData.slates).First.First.ToString());
+            if (_usetestdata)
+            {
+                return JsonConvert.DeserializeObject<List<Slate>>(JsonConvert.DeserializeObject<JObject>(TestData.complexes).First.First.ToString());
+            }
+            return await _api.GetDoctorSlate(facilitycode,doctorcode,theatrecode);
         }
     }
 }
